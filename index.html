@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TODO MVC</title>
+    <script>
+      class TodoItem {
+        constructor(taskName, isCompleted) {
+          this.taskName = taskName;
+          this.isCompleted = isCompleted;
+        }
+        toggle() {
+          this.isCompleted = !this.isCompleted;
+        }
+      }
+      class AppModel {
+        constructor() {
+          this.todoCollection = [];
+        }
+        addTodoItem(todoItem) {
+          this.todoCollection.push(todoItem);
+        }
+        renderIncomplete() {
+          document.getElementById("todo").innerHTML = "";
+          for (var i in this.todoCollection) {
+            if(!this.todoCollection[i].isCompleted){
+              const task = document.createTextNode(this.todoCollection[i].taskName);
+              const span = document.createElement("span");
+              span.appendChild(task);
+              const li = document.createElement("li");
+              const div = document.createElement("div");
+              const cbox = document.createElement("input");
+              cbox.setAttribute("type", "checkbox");
+              cbox.setAttribute("id", "check");
+              let n = i;
+              cbox.addEventListener("click", () => {
+                this.todoCollection[n].toggle();
+                this.renderIncomplete();
+              })
+              if(this.todoCollection[i].isCompleted){
+                span.style.textDecoration = "line-through";
+                cbox.checked = true;
+              }
+              const btn = document.createElement("button");
+              btn.innerHTML = "x";
+              btn.setAttribute("id", "remove");
+              btn.setAttribute("value", "NO");
+              btn.addEventListener("click", () => {
+                this.todoCollection.splice(n, 1);
+                this.renderIncomplete();
+              })
+              div.appendChild(cbox);
+              div.appendChild(span);
+              div.appendChild(btn);
+              li.appendChild(div);
+              document.getElementById("todo").appendChild(li);
+            }
+          }
+        }
+        renderCompleted() {
+          document.getElementById("todo").innerHTML = "";
+          for (var i in this.todoCollection) {
+            if(this.todoCollection[i].isCompleted){
+              const task = document.createTextNode(this.todoCollection[i].taskName);
+              const span = document.createElement("span");
+              span.appendChild(task);
+              const li = document.createElement("li");
+              const div = document.createElement("div");
+              const cbox = document.createElement("input");
+              cbox.setAttribute("type", "checkbox");
+              cbox.setAttribute("id", "check");
+              let n = i;
+              cbox.addEventListener("click", () => {
+                this.todoCollection[n].toggle();
+                this.renderCompleted();
+              })
+              if(this.todoCollection[i].isCompleted){
+                span.style.textDecoration = "line-through";
+                cbox.checked = true;
+              }
+              const btn = document.createElement("button");
+              btn.innerHTML = "x";
+              btn.setAttribute("id", "remove");
+              btn.setAttribute("value", "NO");
+              btn.addEventListener("click", () => {
+                this.todoCollection.splice(n, 1);
+                this.renderCompleted();
+              })
+              div.appendChild(cbox);
+              div.appendChild(span);
+              div.appendChild(btn);
+              li.appendChild(div);
+              document.getElementById("todo").appendChild(li);
+            }
+          }
+
+        }
+        render() {
+          document.getElementById("todo").innerHTML = "";
+          for (var i in this.todoCollection) {
+            const task = document.createTextNode(
+              this.todoCollection[i].taskName
+            );
+            const span = document.createElement("span");
+            span.appendChild(task);
+            const li = document.createElement("li");
+            const div = document.createElement("div");
+            const cbox = document.createElement("input");
+            cbox.setAttribute("type", "checkbox");
+            cbox.setAttribute("id", "check");
+            let n = i;
+            cbox.addEventListener("click", () => {
+              this.todoCollection[n].toggle();
+              this.render();
+            })
+            if(this.todoCollection[i].isCompleted){
+              span.style.textDecoration = "line-through";
+              cbox.checked = true;
+            }
+            const btn = document.createElement("button");
+            btn.innerHTML = "x";
+            btn.setAttribute("id", "remove");
+            btn.setAttribute("value", "NO");
+            btn.addEventListener("click", () => {
+              this.todoCollection.splice(n, 1);
+              this.render();
+            })
+            div.appendChild(cbox);
+            div.appendChild(span);
+            div.appendChild(btn);
+            li.appendChild(div);
+            document.getElementById("todo").appendChild(li);
+          }
+        }
+      }
+      window.onload = () => {
+        const app = new AppModel();
+        document.getElementById("add-task").addEventListener("click", (e) => {
+          let txt = document.getElementById("input-box").value;
+          document.getElementById("input-box").value = "";
+          if (txt !== "") {
+            let item = new TodoItem(txt, false);
+            app.addTodoItem(item);
+          }
+          app.render();
+        });
+        document.getElementById("complete").addEventListener("click", () => {
+          app.renderCompleted();
+        })
+        document.getElementById("incomplete").addEventListener("click", () => {
+          app.renderIncomplete();
+        })
+        document.getElementById("all").addEventListener("click", () => {
+          app.render();
+        })
+      }
+    </script>
+  </head>
+  <body>
+    <input type="text" id="input-box" />
+    <button type="button" id="add-task">Add Task</button>
+    <ul id="todo" style="list-style: none"></ul>
+    <button id="all">All</button>
+    <button id="complete">Completed</button>
+    <button id="incomplete">Incomplete</button>
+  </body>
+</html>
